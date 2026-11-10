@@ -5,6 +5,10 @@
  * escreveu e COMPLETA o que faltou (objetivo, materiais, tempo de cada
  * parte, atividade prática, cuidados com a turma 50+).
  *
+ * As aulas são PRESENCIAIS e o material é fornecido pela Prefeitura de
+ * Vitória: a lista de materiais é o que o professor pede à Prefeitura, e
+ * "o que levar" fica só com itens pessoais do aluno.
+ *
  * Tudo aqui roda sem internet. Quando a IA do Lovable está ligada,
  * src/lib/lia.functions.ts melhora os textos, mas este arquivo continua
  * sendo a base: a aula nunca fica sem plano.
@@ -68,7 +72,9 @@ const limpo = (t?: string) => (t ?? "").replace(/\s+/g, " ").trim();
 const minusculaInicial = (t: string) => (t ? t.charAt(0).toLowerCase() + t.slice(1) : t);
 /** "Fazer a correntinha" já começa com verbo; "Bolero" precisa de um ("praticar bolero"). */
 const comVerbo = (verbo: string, tema: string) =>
-  /^[a-zà-ú]+(ar|er|ir|or)\b/i.test(tema.trim()) ? minusculaInicial(tema) : `${verbo} ${minusculaInicial(tema)}`;
+  /^[a-zà-ú]+(ar|er|ir|or)\b/i.test(tema.trim())
+    ? minusculaInicial(tema)
+    : `${verbo} ${minusculaInicial(tema)}`;
 
 /* ---------------------------------------------------------- */
 /* Conhecimento da Lia por área                                */
@@ -79,13 +85,15 @@ type PerfilArea = {
   cuidados: string[];
   palavras: Palavra[];
   verbo: string;
+  /** itens pessoais que o aluno leva (o material da aula vem da Prefeitura) */
+  levar: string[];
 };
 
 const PERFIS: Record<string, PerfilArea> = {
   Tecnologia: {
     materiais: [
-      "Celular de cada aluno, com bateria carregada",
-      "Carregadores e uma extensão de tomada",
+      "Carregadores e uma extensão de tomada para a turma",
+      "Alguns celulares de apoio, para quem não tiver",
       "Senha do Wi-Fi do local escrita em letra grande",
       "Folha impressa com o passo a passo (letra 16 ou maior)",
     ],
@@ -102,10 +110,11 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Wi-Fi", significado: "Internet sem fio do lugar onde você está." },
     ],
     verbo: "usar",
+    levar: ["Seu celular carregado", "Óculos de leitura, se usar"],
   },
   Arte: {
     materiais: [
-      "Avental ou camiseta velha para cada aluno",
+      "Aventais para a turma",
       "Material de arte para a turma toda (com sobra)",
       "Jornal ou plástico para forrar as mesas",
       "Pano úmido e papel-toalha",
@@ -121,6 +130,7 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Acabamento", significado: "Os últimos cuidados para a peça ficar bonita." },
     ],
     verbo: "fazer",
+    levar: ["Avental ou camiseta velha"],
   },
   Culinária: {
     materiais: [
@@ -141,6 +151,7 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Ponto", significado: "O momento certo em que a comida fica pronta." },
     ],
     verbo: "preparar",
+    levar: ["Avental", "Um pote com tampa para levar um pouco para casa"],
   },
   Movimento: {
     materiais: [
@@ -161,6 +172,7 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Alongamento", significado: "Esticar o corpo com calma, sem dor." },
     ],
     verbo: "praticar",
+    levar: ["Roupa e sapato confortáveis", "Garrafa de água"],
   },
   Natureza: {
     materiais: [
@@ -181,10 +193,11 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Adubo", significado: "O alimento da planta, que vai na terra." },
     ],
     verbo: "cuidar de",
+    levar: ["Chapéu e protetor solar", "Garrafa de água"],
   },
   Música: {
     materiais: [
-      "Instrumento (ou a voz!) de cada aluno",
+      "Instrumentos de apoio para a turma (a voz também vale!)",
       "Letras das músicas impressas em letra grande",
       "Caixa de som",
     ],
@@ -198,6 +211,7 @@ const PERFIS: Record<string, PerfilArea> = {
       { termo: "Refrão", significado: "A parte da música que se repete." },
     ],
     verbo: "tocar",
+    levar: ["Seu instrumento, se tiver"],
   },
   Idiomas: {
     materiais: [
@@ -213,6 +227,7 @@ const PERFIS: Record<string, PerfilArea> = {
     ],
     palavras: [{ termo: "Pronúncia", significado: "O jeito certo de falar a palavra." }],
     verbo: "falar sobre",
+    levar: ["Óculos de leitura, se usar"],
   },
   "Saúde e bem-estar": {
     materiais: [
@@ -228,6 +243,7 @@ const PERFIS: Record<string, PerfilArea> = {
     ],
     palavras: [{ termo: "Hábito", significado: "Uma coisa que a gente faz quase todo dia." }],
     verbo: "cuidar de",
+    levar: ["Garrafa de água"],
   },
 };
 
@@ -242,6 +258,7 @@ const PERFIL_GERAL: PerfilArea = {
   cuidados: [],
   palavras: [],
   verbo: "aprender sobre",
+  levar: ["Óculos de leitura, se usar", "Garrafa de água"],
 };
 
 const DICAS_TURMA_50 = [
@@ -299,7 +316,9 @@ export function gerarPlanoAula(curso: DadosCurso, aula: DadosAula, numero = 1): 
   let materiais = (aula.materiais ?? []).map(limpo).filter(Boolean);
   if (!materiais.length) {
     materiais = [...perfil.materiais];
-    completados.push("Sugeri a lista de materiais, pensando na sua área.");
+    completados.push(
+      "Sugeri a lista do material que a Prefeitura vai fornecer, pensando na sua área.",
+    );
   }
   if (!materiais.some((m) => /presen/i.test(m))) materiais.push("Lista de presença");
 
@@ -354,7 +373,8 @@ export function gerarPlanoAula(curso: DadosCurso, aula: DadosAula, numero = 1): 
   const resumoAluno = [
     `Nesta aula, vamos aprender: ${tema}.`,
     `No final, você vai conseguir ${comVerbo(perfil.verbo, tema)} com calma.`,
-    `Primeiro o professor mostra como se faz. Depois, você pratica com a ajuda dele.`,
+    `A aula é presencial: primeiro o professor mostra como se faz e depois você pratica com a ajuda dele.`,
+    `O material é fornecido pela Prefeitura.`,
     `A aula dura ${duracao} minutos${tempo["intervalo"] ? ", com um intervalo no meio" : ""}.`,
   ].join(" ");
 
@@ -386,7 +406,7 @@ export type Sugestao = {
 export function sugerirDescricao(curso: DadosCurso): string {
   const titulo = limpo(curso.titulo) || "este curso";
   const perfil = perfilDa(String(curso.categoria));
-  return `Um curso presencial e sem pressa para quem quer ${comVerbo(perfil.verbo, titulo)}. Não precisa saber nada antes: vamos aprender juntos, um passo de cada vez, em uma turma pequena e acolhedora.`;
+  return `Um curso presencial e sem pressa para quem quer ${comVerbo(perfil.verbo, titulo)}. Não precisa saber nada antes: vamos aprender juntos, um passo de cada vez, em uma turma pequena e acolhedora. O material é fornecido pela Prefeitura.`;
 }
 
 export function revisarCurso(curso: DadosCurso): Sugestao[] {
@@ -408,7 +428,7 @@ export function revisarCurso(curso: DadosCurso): Sugestao[] {
     s.push({
       campo: "oQueLevar",
       falta: "Falta dizer o que o aluno precisa levar.",
-      sugestao: perfilDa(String(curso.categoria)).materiais.slice(0, 2),
+      sugestao: perfilDa(String(curso.categoria)).levar,
     });
   return s;
 }
@@ -427,21 +447,21 @@ export function passoAPassoOrganizar(curso: DadosCurso): BlocoOrganizacao[] {
         `Confirme o lugar${curso.local ? ` (${curso.local})` : ""}: tem rampa, banheiro perto e cadeiras firmes?`,
         "Veja a lista de inscritos aqui na plataforma.",
         "Crie um grupo de WhatsApp da turma e mande um áudio de boas-vindas.",
-        `Separe os materiais: ${perfil.materiais.slice(0, 2).join("; ").toLowerCase()}.`,
+        `Peça à Prefeitura o material da aula: ${perfil.materiais.slice(0, 2).join("; ").toLowerCase()}.`,
       ],
     },
     {
       quando: "Um dia antes",
       itens: [
         `Lembre a turma do dia e do horário${curso.diaHorario ? ` (${curso.diaHorario})` : ""} e do que levar.`,
-        "Imprima o resumo da aula em letra grande.",
+        "Confirme com a Prefeitura as cópias do resumo da aula em letra grande.",
         "Ensaie a parte em que você mostra como se faz.",
       ],
     },
     {
       quando: "No dia da aula",
       itens: [
-        "Chegue 20 minutos antes para arrumar a sala.",
+        "Chegue 20 minutos antes para arrumar a sala e conferir o material da Prefeitura.",
         "Deixe água à vista e mostre onde fica o banheiro.",
         "Passe a lista de presença.",
         "Siga o passo a passo da aula que a Lia montou com você.",
@@ -467,7 +487,10 @@ export function textoParaOuvir(plano: PlanoAula, numero: number): string {
     plano.resumoAluno,
     `O que vamos fazer: ${plano.etapas.map((e) => e.titulo).join(", ")}.`,
   ];
-  if (plano.materiais.length) partes.push(`O que levar ou usar: ${plano.materiais.join(", ")}.`);
+  if (plano.materiais.length)
+    partes.push(
+      `O material da aula é fornecido pela Prefeitura: ${plano.materiais.filter((m) => !/presen/i.test(m)).join(", ")}.`,
+    );
   if (plano.palavrasNovas.length)
     partes.push(
       `Palavras novas: ${plano.palavrasNovas.map((p) => `${p.termo}: ${p.significado}`).join(" ")}`,

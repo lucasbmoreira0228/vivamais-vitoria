@@ -112,7 +112,7 @@ export function MontarAula({
       </label>
       <details className="rounded-2xl border-2 p-5">
         <summary className="cursor-pointer text-lg font-bold">
-          Quero escrever o objetivo e os materiais (opcional)
+          Quero escrever o objetivo e o material (opcional)
         </summary>
         <label className="mt-4 block text-lg font-bold">
           Objetivo da aula
@@ -124,7 +124,7 @@ export function MontarAula({
           />
         </label>
         <label className="mt-4 block text-lg font-bold">
-          Materiais (um por linha)
+          Material que você vai pedir à Prefeitura (um por linha)
           <textarea
             rows={3}
             value={materiais}

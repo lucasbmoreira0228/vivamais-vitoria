@@ -142,7 +142,7 @@ function PaginaCurso() {
 
   function resumoCurso() {
     if (!curso) return "";
-    return `${curso.titulo}. Com ${curso.professor.nome}. Lugar: ${curso.local}${curso.endereco ? ", " + curso.endereco : ""}. Quando: ${curso.diaHorario}. Cada aula dura ${curso.duracaoMin} minutos. ${vagas ? `Ainda tem ${vagas} vagas.` : "A turma está cheia."} ${curso.oQueLevar.length ? "Leve: " + curso.oQueLevar.join(", ") + "." : ""}`;
+    return `${curso.titulo}. Com ${curso.professor.nome}. Lugar: ${curso.local}${curso.endereco ? ", " + curso.endereco : ""}. Quando: ${curso.diaHorario}. As aulas são presenciais e cada uma dura ${curso.duracaoMin} minutos. O material é fornecido pela Prefeitura. ${vagas ? `Ainda tem ${vagas} vagas.` : "A turma está cheia."} ${curso.oQueLevar.length ? "Leve de casa: " + curso.oQueLevar.join(", ") + "." : ""}`;
   }
 
   if (!curso)
@@ -187,9 +187,12 @@ function PaginaCurso() {
         >
           ← Todos os cursos
         </Link>
-        <p className="mt-8">
+        <p className="mt-8 flex flex-wrap gap-2">
           <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
             {curso.categoria}
+          </span>
+          <span className="rounded-full border-2 border-foreground px-3 py-0.5 text-sm font-bold">
+            Aula presencial
           </span>
         </p>
         <h1 className="mt-4 text-5xl font-semibold md:text-6xl">{curso.titulo}</h1>
@@ -224,9 +227,13 @@ function PaginaCurso() {
               <dt className="font-bold">👤 Professor</dt>
               <dd>{curso.professor.nome}</dd>
             </div>
+            <div className="sm:col-span-2">
+              <dt className="font-bold">📦 Material das aulas</dt>
+              <dd>Fornecido pela Prefeitura de Vitória. Você não paga nada.</dd>
+            </div>
             {curso.oQueLevar.length > 0 && (
               <div className="sm:col-span-2">
-                <dt className="font-bold">🎒 O que levar</dt>
+                <dt className="font-bold">🎒 O que levar de casa</dt>
                 <dd>{curso.oQueLevar.join(" · ")}</dd>
               </div>
             )}

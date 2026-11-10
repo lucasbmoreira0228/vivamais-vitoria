@@ -189,15 +189,17 @@ function respostaLocal(pergunta: string): string {
   if (/inscrev|matricul|participar|vaga/.test(p))
     return "Para se inscrever, abra Cursos e toque no curso que você quer. Depois, toque no botão Quero me inscrever. Você precisa estar com a sua conta aberta.";
   if (/cadastr|criar conta|conta nova/.test(p))
-    return "Toque em Cadastre-se, no alto da página. Escolha se quer aprender ou ensinar, preencha seu nome, telefone, e-mail e crie uma senha. Eu posso mostrar cada campo para você.";
+    return "Toque em Cadastre-se, no alto da página. Escolha se quer aprender ou ensinar. Depois toque em Cadastrar com o Google, ou preencha seu nome, telefone, e-mail e senha. Eu posso mostrar cada campo para você.";
   if (/entrar|login|acessar/.test(p))
-    return "Toque em Entrar, no alto da página. Escreva o seu e-mail e a sua senha e toque no botão Entrar.";
+    return "Toque em Entrar, no alto da página. O jeito mais fácil é tocar em Entrar com o Google e escolher a sua conta. Ou escreva o seu e-mail e a sua senha e toque no botão Entrar.";
   if (/professor|ensinar|criar curso|montar|plano|aula nova/.test(p))
     return "Abra Para professores, no alto da página. Eu ajudo você a criar o curso em 4 etapas e monto o passo a passo de cada aula. O que faltar, eu completo e você confere.";
   if (/material|aula|entender|apostila/.test(p))
-    return "Abra o curso e desça até a parte Aulas. Em cada aula, toque em Ler esta aula para mim e eu leio tudo, devagar.";
+    return "O material da aula é fornecido pela Prefeitura. Para ver o que cada aula vai ensinar, abra o curso e desça até Aulas e material. Toque em Ler esta aula para mim e eu leio tudo, devagar.";
   if (/onde|endereco|local|horario|dia|quando/.test(p))
     return "Cada curso mostra o bairro, o endereço, o dia e o horário. Abra Cursos e toque no curso para ver tudo.";
+  if (/comprar|pagar|preco|custa|online|internet|distancia|presencial|levar/.test(p))
+    return "As aulas são presenciais, no bairro de cada curso. O material da aula é fornecido pela Prefeitura de Vitória, então você não precisa comprar nada. Na página do curso aparece o que levar de casa, como óculos ou uma garrafa de água.";
   if (/golpe|pix|codigo|banco/.test(p))
     return "Cuidado! A Viva+Vitória nunca pede PIX, código de mensagem ou senha de banco. Se alguém pedir, não responda e fale com alguém de confiança.";
   return "Ainda não sei responder isso. Toque em Ler esta página, ou pergunte ao professor do curso. Ele vai gostar de ajudar.";

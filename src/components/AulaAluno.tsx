@@ -70,7 +70,10 @@ export function AulaAluno({
         </div>
         {materiais.length > 0 && (
           <div>
-            <h4 className="text-xl font-bold">O que vamos usar</h4>
+            <h4 className="text-xl font-bold">Material da aula</h4>
+            <p className="mt-1 text-lg text-muted-foreground">
+              Fornecido pela Prefeitura. Você não precisa comprar nada.
+            </p>
             <ul className="mt-2 list-disc space-y-1 pl-6 text-lg">
               {materiais.map((m) => (
                 <li key={m}>{m}</li>

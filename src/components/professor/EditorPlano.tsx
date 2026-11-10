@@ -141,7 +141,7 @@ export function EditorPlano({
       </fieldset>
 
       <label className="block text-lg font-bold">
-        Materiais (um por linha)
+        Material que a Prefeitura vai fornecer (um por linha)
         <textarea
           rows={4}
           value={plano.materiais.join("\n")}

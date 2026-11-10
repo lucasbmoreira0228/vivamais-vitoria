@@ -18,6 +18,9 @@ export function CartaoCurso({
       <span className="self-start rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
         {curso.categoria}
       </span>
+      <span className="mt-2 self-start text-sm font-bold uppercase tracking-wider text-muted-foreground">
+        Presencial · material da Prefeitura
+      </span>
       <h3 className="mt-4 text-2xl font-semibold">{curso.titulo}</h3>
       <p className="mt-3 text-lg text-muted-foreground">
         📍 {curso.local}

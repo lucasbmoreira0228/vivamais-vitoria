@@ -10,9 +10,17 @@ export type Usuario = {
   email: string;
   nome: string;
   tipo: "aprender" | "ensinar";
+  /** false quando a pessoa entrou pelo Google e ainda falta telefone e curso */
+  cadastroCompleto: boolean;
 };
 
-type MetaConta = { nome?: string; tipo?: string };
+type MetaConta = {
+  nome?: string;
+  full_name?: string;
+  name?: string;
+  tipo?: string;
+  telefone?: string;
+};
 
 function paraUsuario(
   u: { id: string; email?: string | undefined; user_metadata?: MetaConta } | null | undefined,
@@ -23,8 +31,9 @@ function paraUsuario(
   return {
     id: u.id,
     email,
-    nome: meta.nome?.trim() || email.split("@")[0] || "Você",
+    nome: (meta.nome || meta.full_name || meta.name || "").trim() || email.split("@")[0] || "Você",
     tipo: meta.tipo === "ensinar" ? "ensinar" : "aprender",
+    cadastroCompleto: !!meta.telefone,
   };
 }
 
@@ -74,6 +83,8 @@ export function erroEmPortugues(mensagem: string | undefined): string {
     return "A senha precisa ter pelo menos 6 letras ou números.";
   if (m.includes("rate limit"))
     return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.";
+  if (m.includes("provider is not enabled") || m.includes("unsupported provider"))
+    return "O acesso pelo Google ainda não foi ligado. Por enquanto, use o e-mail e a senha.";
   if (m.includes("missing supabase")) return "O login ainda não está ligado nesta versão do site.";
   return "Não consegui agora. Confira a internet e tente de novo.";
 }
@@ -83,5 +94,39 @@ export async function sair() {
     await supabase.auth.signOut();
   } catch {
     /* nada a fazer */
+  }
+}
+
+const CHAVE_TIPO = "vivamais.tipoGoogle";
+
+/**
+ * Entrar ou se cadastrar com a conta do Google.
+ * A pessoa sai do site, escolhe a conta no Google e volta para /entrar.
+ */
+export async function entrarComGoogle(
+  opcoes: { tipo?: "aprender" | "ensinar"; voltar?: string } = {},
+) {
+  try {
+    if (opcoes.tipo) localStorage.setItem(CHAVE_TIPO, opcoes.tipo);
+  } catch {
+    /* sem armazenamento */
+  }
+  const destino = new URL("/entrar", location.origin);
+  destino.searchParams.set("google", "1");
+  if (opcoes.voltar) destino.searchParams.set("voltar", opcoes.voltar);
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: destino.toString(), queryParams: { prompt: "select_account" } },
+  });
+  if (error) throw error;
+}
+
+/** O tipo (aprender/ensinar) escolhido antes de ir para o Google. */
+export function tipoEscolhidoNoGoogle(): "aprender" | "ensinar" | undefined {
+  try {
+    const t = localStorage.getItem(CHAVE_TIPO);
+    return t === "ensinar" || t === "aprender" ? t : undefined;
+  } catch {
+    return undefined;
   }
 }

@@ -50,7 +50,7 @@ function Index() {
         detalhe: "Explico em poucas palavras",
         executar: () =>
           lia.falar(
-            "A Viva+Vitória é uma comunidade para quem tem mais de 50 anos, em Vitória. Você pode fazer cursos presenciais perto de casa, ou ensinar o que você sabe. É de graça e o cadastro vai para a Prefeitura.",
+            "A Viva+Vitória é uma comunidade para quem tem mais de 50 anos, em Vitória. Você pode fazer cursos presenciais perto de casa, ou ensinar o que você sabe. As aulas são presenciais, é de graça, o material é fornecido pela Prefeitura e o cadastro vai para ela.",
           ),
       },
     ],

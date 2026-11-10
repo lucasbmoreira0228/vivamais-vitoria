@@ -2,12 +2,19 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { erroEmPortugues, useUsuario } from "@/lib/auth";
+import { BotaoGoogle, SeparadorOu } from "@/components/BotaoGoogle";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useLia, useLiaPagina } from "@/components/lia/Lia";
 
 export const Route = createFileRoute("/entrar")({
-  validateSearch: (s: Record<string, unknown>): { voltar?: string } =>
-    typeof s["voltar"] === "string" && s["voltar"].startsWith("/") ? { voltar: s["voltar"] } : {},
+  validateSearch: (s: Record<string, unknown>): { voltar?: string; google?: string } => ({
+    ...(typeof s["voltar"] === "string" &&
+    s["voltar"].startsWith("/") &&
+    !s["voltar"].startsWith("//")
+      ? { voltar: s["voltar"] }
+      : {}),
+    ...(s["google"] ? { google: "1" } : {}),
+  }),
   head: () => ({
     meta: [
       { title: "Entrar — Viva+Vitória" },
@@ -29,7 +36,7 @@ const campo =
   "mt-2 w-full rounded-xl border-2 bg-card px-4 py-3 text-lg outline-none focus:border-primary";
 
 function Entrar() {
-  const { voltar } = Route.useSearch();
+  const { voltar, google } = Route.useSearch();
   const navigate = useNavigate();
   const { usuario } = useUsuario();
   const lia = useLia();
@@ -51,16 +58,38 @@ function Entrar() {
     }
   }, []);
 
+  // Voltando do Google: quem é novo termina o cadastro; quem já tem segue em frente.
+  useEffect(() => {
+    if (!google || !usuario) return;
+    if (!usuario.cadastroCompleto) {
+      lia.falar("Você entrou com o Google! Agora faltam só alguns dados do cadastro.");
+      void navigate({ to: "/cadastro" });
+      return;
+    }
+    lia.falar(`Que bom ver você, ${usuario.nome.split(" ")[0]}! Você entrou com o Google.`);
+    const destino =
+      voltar && voltar !== "/cadastro"
+        ? voltar
+        : usuario.tipo === "ensinar"
+          ? "/professor"
+          : "/cursos";
+    void navigate({ to: destino });
+  }, [google, usuario, voltar, navigate, lia]);
+
   useLiaPagina({
     nome: "Entrar na sua conta",
     papel: "visitante",
     saudacao:
-      "Olá! Eu sou a Lia. Aqui você entra na sua conta com o e-mail e a senha do cadastro. Quer que eu mostre como?",
+      "Olá! Eu sou a Lia. Aqui você entra na sua conta. O jeito mais fácil é tocar em Entrar com o Google. Ou use o e-mail e a senha do cadastro. Quer que eu mostre como?",
     roteiros: [
       {
         id: "entrar",
         tarefa: "Entrar na minha conta",
         passos: [
+          {
+            alvo: "botao-google",
+            fala: "Se você tem conta no Google, como o Gmail, toque neste botão e escolha a sua conta. Se você usa e-mail e senha, toque em Próximo.",
+          },
           {
             alvo: "campo-email",
             fala: "Vamos entrar juntos. Toque neste campo e escreva o seu e-mail, o mesmo do cadastro. Depois toque em Próximo.",
@@ -171,7 +200,7 @@ function Entrar() {
             ? "Escreva o e-mail do seu cadastro. Vamos mandar um link para você criar uma senha nova."
             : modo === "nova-senha"
               ? "Escreva uma senha que você consiga lembrar, com pelo menos 6 letras ou números."
-              : "Use o e-mail e a senha que você criou no cadastro. Se precisar, chame a Lia no canto da tela."}
+              : "Entre com a sua conta do Google, ou use o e-mail e a senha que você criou no cadastro. Se precisar, chame a Lia no canto da tela."}
         </p>
 
         {usuario && modo === "entrar" && (
@@ -186,7 +215,19 @@ function Entrar() {
           </p>
         )}
 
-        <form onSubmit={onSubmit} className="mt-8 space-y-6 text-lg">
+        {modo === "entrar" && (
+          <>
+            <div className="mt-8">
+              <BotaoGoogle texto="Entrar com o Google" voltar={voltar} />
+            </div>
+            <SeparadorOu />
+          </>
+        )}
+
+        <form
+          onSubmit={onSubmit}
+          className={`${modo === "entrar" ? "" : "mt-8 "}space-y-6 text-lg`}
+        >
           {modo !== "nova-senha" && (
             <label className="block font-bold">
               E-mail

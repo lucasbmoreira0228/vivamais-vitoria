@@ -117,7 +117,7 @@ function Professor() {
           },
           {
             alvo: "escolha-categoria",
-            fala: "Agora toque no tipo do seu curso. Assim eu sei quais materiais e cuidados sugerir. Depois toque em Próximo.",
+            fala: "Agora toque no tipo do seu curso. Assim eu sei qual material pedir à Prefeitura e quais cuidados sugerir. Depois toque em Próximo.",
           },
           {
             alvo: "campo-descricao",
@@ -224,9 +224,7 @@ function Professor() {
       diaHorario: d.diaHorario?.trim() || "Dia a combinar",
       duracaoMin: d.duracaoMin || aula?.plano.duracaoMin || 90,
       vagas: d.vagas || 15,
-      oQueLevar: d.oQueLevar?.length
-        ? d.oQueLevar
-        : perfilDa(String(d.categoria)).materiais.slice(0, 2),
+      oQueLevar: d.oQueLevar?.length ? d.oQueLevar : perfilDa(String(d.categoria)).levar,
       professor: { id: usuario.id, nome: usuario.nome },
       aulas: aula
         ? [{ id: novoId(), numero: 1, plano: aula.plano, criadaEm: new Date().toISOString() }]
@@ -252,8 +250,9 @@ function Professor() {
         </p>
         <h1 className="text-5xl font-semibold md:text-6xl">Área do professor</h1>
         <p className="mt-6 max-w-3xl text-xl text-muted-foreground">
-          Monte o seu curso em 4 etapas. A Lia, no canto da tela, faz o passo a passo de cada aula e
-          completa o que faltar, como uma colega professora. Você confere e decide.
+          Os cursos são presenciais e o material das aulas é fornecido pela Prefeitura. Monte o seu
+          curso em 4 etapas. A Lia, no canto da tela, faz o passo a passo de cada aula e completa o
+          que faltar, como uma colega professora. Você confere e decide.
         </p>
 
         {!usuario && (
@@ -455,7 +454,8 @@ function Professor() {
                 </div>
                 <div>
                   <label className="block text-lg font-bold">
-                    O que o aluno precisa levar? (um por linha, opcional)
+                    O que o aluno leva de casa? Só coisas pessoais: o material vem da Prefeitura (um
+                    por linha, opcional)
                     <textarea
                       rows={3}
                       value={r.oQueLevar}
@@ -466,7 +466,7 @@ function Professor() {
                   <button
                     type="button"
                     onClick={() => {
-                      const itens = perfilDa(r.categoria).materiais.slice(0, 3);
+                      const itens = perfilDa(r.categoria).levar;
                       mudar({ oQueLevar: itens.join("\n") });
                       lia.falar(`Sugeri: ${itens.join(", ")}.`);
                     }}
