@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { AulaAluno } from "@/components/AulaAluno";
 import { useLia, useLiaPagina, type RoteiroLia } from "@/components/lia/Lia";
 import {
   cancelarInscricao,
@@ -11,7 +10,6 @@ import {
   vagasRestantes,
 } from "@/lib/cursos";
 import { useUsuario } from "@/lib/auth";
-import { textoParaOuvir } from "@/lib/lia-professora";
 
 export const Route = createFileRoute("/cursos/$id")({
   head: () => ({
@@ -19,10 +17,11 @@ export const Route = createFileRoute("/cursos/$id")({
       { title: "Curso — Viva+Vitória" },
       {
         name: "description",
-        content: "Veja as aulas, o material e faça a sua inscrição no curso, com a ajuda da Lia.",
+        content:
+          "Veja o lugar, o dia e o horário do curso e faça a sua inscrição, com a ajuda da Lia.",
       },
       { property: "og:title", content: "Curso — Viva+Vitória" },
-      { property: "og:description", content: "Aulas, material e inscrição no curso." },
+      { property: "og:description", content: "Informações e inscrição no curso." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -81,35 +80,9 @@ function PaginaCurso() {
     nome: curso ? `Curso ${curso.titulo}` : "Curso",
     papel: "aluno",
     saudacao: curso
-      ? `Olá! Este é o curso ${curso.titulo}, com ${curso.professor.nome}, em ${curso.local}, ${curso.diaHorario}. Quer que eu ajude você a se inscrever ou a entender as aulas?`
+      ? `Olá! Este é o curso ${curso.titulo}, com ${curso.professor.nome}, em ${curso.local}, ${curso.diaHorario}. Quer que eu ajude você a se inscrever?`
       : undefined,
-    roteiros: curso
-      ? [
-          roteiroInscricao,
-          ...(curso.aulas.length
-            ? [
-                {
-                  id: "material",
-                  tarefa: "Achar e entender o material",
-                  passos: [
-                    {
-                      alvo: "primeira-aula",
-                      fala: "Aqui fica o material de cada aula: o que você vai aprender, o que vamos fazer e as palavras novas. Depois toque em Próximo.",
-                    },
-                    {
-                      alvo: "ler-aula",
-                      fala: "Toque em Ler esta aula para mim e eu leio tudo, devagar. Depois toque em Próximo.",
-                    },
-                    {
-                      alvo: "explicar-aula",
-                      fala: "Se alguma coisa não ficou clara, toque aqui e eu explico de um jeito mais simples.",
-                    },
-                  ],
-                },
-              ]
-            : []),
-        ]
-      : [],
+    roteiros: curso ? [roteiroInscricao] : [],
     acoes: curso
       ? [
           {
@@ -118,26 +91,9 @@ function PaginaCurso() {
             detalhe: "Lugar, dia, horário e o que levar",
             executar: () => lia.falar(resumoCurso()),
           },
-          ...(curso.aulas[0]
-            ? [
-                {
-                  id: "ler-aula-1",
-                  titulo: "Ler a primeira aula",
-                  detalhe: curso.aulas[0].plano.tema,
-                  executar: () => lia.falar(textoParaOuvir(curso.aulas[0]!.plano, 1)),
-                },
-              ]
-            : []),
         ]
       : [],
-    contexto: () =>
-      curso
-        ? [
-            resumoCurso(),
-            curso.descricao,
-            ...curso.aulas.map((a) => textoParaOuvir(a.plano, a.numero)),
-          ].join("\n")
-        : "",
+    contexto: () => (curso ? [resumoCurso(), curso.descricao].join("\n") : ""),
   });
 
   function resumoCurso() {
@@ -300,23 +256,6 @@ function PaginaCurso() {
             )}
           </div>
         </div>
-
-        <section className="mt-16" aria-labelledby="aulas">
-          <h2 id="aulas" className="text-4xl font-semibold">
-            Aulas e material
-          </h2>
-          <p className="mt-3 text-lg text-muted-foreground">
-            Toque em “Ler esta aula para mim” e a Lia lê tudo, devagar.
-          </p>
-          <div className="mt-8 space-y-6">
-            {curso.aulas.map((a, i) => (
-              <AulaAluno key={a.id} aula={a} cursoTitulo={curso.titulo} primeira={i === 0} />
-            ))}
-            {!curso.aulas.length && (
-              <p className="text-lg">O professor ainda está preparando as aulas.</p>
-            )}
-          </div>
-        </section>
       </main>
     </>
   );

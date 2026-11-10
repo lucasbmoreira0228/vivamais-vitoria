@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { AulaAluno } from "@/components/AulaAluno";
 import { MontarAula, type AulaMontada } from "@/components/professor/MontarAula";
 import { useLia, useLiaPagina } from "@/components/lia/Lia";
 import { useUsuario } from "@/lib/auth";
@@ -568,18 +567,6 @@ function Professor() {
                   </div>
                 </div>
 
-                {aula && (
-                  <div>
-                    <h3 className="text-2xl font-semibold">Assim o aluno vai ver a aula</h3>
-                    <div className="mt-4">
-                      <AulaAluno
-                        aula={{ id: "previa", numero: 1, plano: aula.plano, criadaEm: "" }}
-                        cursoTitulo={r.titulo}
-                      />
-                    </div>
-                  </div>
-                )}
-
                 {usuario ? (
                   <button
                     type="button"
@@ -738,7 +725,7 @@ function MeuCurso({ curso, inscritos }: { curso: Curso; inscritos: string[] }) {
                 adicionarAula(curso.id, aula.plano);
                 setAula(null);
                 setNovaAula(false);
-                lia.falar("Aula guardada! Os alunos já podem ver o material.");
+                lia.falar("Aula guardada!");
               }}
               className="mt-6 min-h-16 w-full rounded-full bg-primary text-xl font-bold text-primary-foreground"
             >

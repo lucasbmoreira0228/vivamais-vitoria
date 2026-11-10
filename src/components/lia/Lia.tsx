@@ -195,7 +195,7 @@ function respostaLocal(pergunta: string): string {
   if (/professor|ensinar|criar curso|montar|plano|aula nova/.test(p))
     return "Abra Para professores, no alto da página. Eu ajudo você a criar o curso em 4 etapas e monto o passo a passo de cada aula. O que faltar, eu completo e você confere.";
   if (/material|aula|entender|apostila/.test(p))
-    return "O material da aula é fornecido pela Prefeitura. Para ver o que cada aula vai ensinar, abra o curso e desça até Aulas e material. Toque em Ler esta aula para mim e eu leio tudo, devagar.";
+    return "As aulas são presenciais e o material é fornecido pela Prefeitura. O professor explica tudo na aula. Na página do curso você vê o lugar, o dia e o horário.";
   if (/onde|endereco|local|horario|dia|quando/.test(p))
     return "Cada curso mostra o bairro, o endereço, o dia e o horário. Abra Cursos e toque no curso para ver tudo.";
   if (/comprar|pagar|preco|custa|online|internet|distancia|presencial|levar/.test(p))

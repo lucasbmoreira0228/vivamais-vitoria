@@ -102,7 +102,7 @@ function Index() {
           <ul className="mt-4 grid gap-2 text-lg sm:grid-cols-2">
             <li>✓ Ajuda no cadastro e no login</li>
             <li>✓ Acha o curso certo para você</li>
-            <li>✓ Lê e explica o material das aulas</li>
+            <li>✓ Lê as páginas em voz alta</li>
             <li>✓ Monta o passo a passo da aula com o professor</li>
           </ul>
           <button type="button" onClick={lia.saudar} className="mt-6 rounded-full bg-secondary px-8 py-4 text-lg font-bold text-secondary-foreground">
