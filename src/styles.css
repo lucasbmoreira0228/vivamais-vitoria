@@ -1,0 +1,90 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Nunito", system-ui, sans-serif;
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.985 0.008 90);
+  --foreground: oklch(0.3 0.08 259);
+  --card: oklch(0.995 0.005 90);
+  --card-foreground: oklch(0.3 0.08 259);
+  --primary: oklch(0.423 0.14 257);
+  --primary-foreground: oklch(0.985 0.008 90);
+  --secondary: oklch(0.311 0.102 259);
+  --secondary-foreground: oklch(0.97 0.02 90);
+  --muted: oklch(0.94 0.02 90);
+  --muted-foreground: oklch(0.38 0.06 259);
+  --accent: oklch(0.86 0.13 85);
+  --accent-foreground: oklch(0.3 0.08 259);
+  --highlight: oklch(0.556 0.209 27);
+  --highlight-foreground: oklch(0.985 0.008 90);
+  --border: oklch(0.7 0.045 250);
+  --input: oklch(0.7 0.045 250);
+  --ring: oklch(0.423 0.14 257);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { font-size: 18px; }
+  body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); line-height: 1.6; }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+  :focus-visible { outline: 4px solid var(--color-highlight); outline-offset: 3px; }
+}
+
+/* ---------- Lia: letra grande (toda a página cresce, porque tudo usa rem) ---------- */
+html.lia-letra-grande { font-size: 22px; }
+html.lia-letra-grande main a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Lia: destaque e animações ---------- */
+.lia-anel { box-shadow: 0 0 0 3px #fff, 0 0 0 100vmax rgba(0, 0, 0, 0.5); }
+.lia-anel::after {
+  content: ""; position: absolute; inset: -5px; border-radius: inherit;
+  border: 5px solid var(--color-highlight); opacity: 0;
+}
+.lia-boca-aberta { display: none; transform-box: fill-box; transform-origin: center; }
+.lia-falando .lia-boca { display: none; }
+.lia-falando .lia-boca-aberta { display: inline; }
+.lia-balao::before {
+  content: ""; position: absolute; left: -12px; bottom: 20px;
+  border: 11px solid transparent; border-right-color: currentColor; border-left: 0; opacity: .35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lia-anel { transition: left .25s ease, top .25s ease, width .25s ease, height .25s ease; }
+  .lia-anel::after { animation: lia-pulso 1.4s ease-out infinite; }
+  .lia-seta svg { animation: lia-quica .9s ease-in-out infinite; }
+  .lia-falando .lia-boca-aberta { animation: lia-fala .26s ease-in-out infinite alternate; }
+  .lia-lancador { animation: lia-chama 2.4s ease-in-out 1s 3; }
+}
+@keyframes lia-pulso { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.18); } }
+@keyframes lia-quica { 50% { translate: 0 -10px; } }
+@keyframes lia-fala { from { transform: scaleY(.3); } to { transform: scaleY(1.1); } }
+@keyframes lia-chama { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@media (forced-colors: active) { .lia-anel { border-color: Highlight; } }
+@media (min-width: 1100px) { html.lia-aberta body { padding-right: 444px; } }
